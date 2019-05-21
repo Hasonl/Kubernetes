@@ -1,0 +1,24 @@
+//// K8s cluster master  kube-scheduler.service  All the same.
+
+[root@k8s-m1 system]# cat kube-scheduler.service 
+
+[Unit]
+Description=Kubernetes Scheduler
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+ExecStart=/opt/k8s/bin/kube-scheduler \
+  --address=127.0.0.1 \
+  --kubeconfig=/etc/kubernetes/kube-scheduler.kubeconfig \
+  --leader-elect=true \
+  --alsologtostderr=true \
+  --logtostderr=false \
+  --log-dir=/var/log/kubernetes \
+  --v=2
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+
