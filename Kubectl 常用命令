@@ -1,0 +1,61 @@
+
+kubectl get nodes                      查看集群Node几点
+
+kubectl describe nodes 172.28.2.80     查看 172.28.2.80 这台服务器整机情况
+
+kubectl get pod -n rttx-old -o wide    查看  rttx-old namespace中的所有pod运行状态和运行在哪个节点上的信息
+
+docker logs -f --tail 500 2f3724cb98f0 查看容器日志 （500行）
+
+
+docker ps | grep message               查看message容器进程
+
+
+docker inspect 8623b315b259 | grep Image      查看容器  8623b315b259 的镜像
+
+kubectl exec -it -n rttx-old openapi-entryv8-exserver-6c66f4b659-qkd7r /bin/sh        通过kubectl进入容器
+
+
+$ kubectl get services                          # 列出所有 namespace 中的所有 service
+$ kubectl get pods --all-namespaces             # 列出所有 namespace 中的所有 pod
+$ kubectl get pods -o wide                      # 列出所有 pod 并显示详细信息
+$ kubectl get deployment my-dep                 # 列出指定 deployment
+$ kubectl get pods --include-uninitialized      # 列出该 namespace 中的所有 pod 包括未初始化的
+
+# 使用详细输出来描述命令
+$ kubectl describe nodes my-node
+$ kubectl describe pods my-pod
+
+$ kubectl get services --sort-by=.metadata.name # List Services Sorted by Name
+
+# 根据重启次数排序列出 pod
+$ kubectl get pods --sort-by='.status.containerStatuses[0].restartCount'
+
+# 获取所有具有 app=cassandra 的 pod 中的 version 标签
+$ kubectl get pods --selector=app=cassandra rc -o \
+  jsonpath='{.items[*].metadata.labels.version}'
+
+# 获取所有节点的 ExternalIP
+$ kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP")].address}'
+
+# 列出属于某个 PC 的 Pod 的名字
+# “jq”命令用于转换复杂的 jsonpath，参考 https://stedolan.github.io/jq/
+$ sel=${$(kubectl get rc my-rc --output=json | jq -j '.spec.selector | to_entries | .[] | "\(.key)=\(.value),"')%?}
+$ echo $(kubectl get pods --selector=$sel --output=jsonpath={.items..metadata.name})
+
+# 查看哪些节点已就绪
+$ JSONPATH='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}{end}' \
+ && kubectl get nodes -o jsonpath="$JSONPATH" | grep "Ready=True"
+
+# 列出当前 Pod 中使用的 Secret
+$ kubectl get pods -o json | jq '.items[].spec.containers[].env[]?.valueFrom.secretKeyRef.name' | grep -v null | sort | uniq
+
+
+
+$ kubectl cordon my-node                                                # 标记 my-node 不可调度
+$ kubectl drain my-node                                                 # 清空 my-node 以待维护
+$ kubectl uncordon my-node                                              # 标记 my-node 可调度
+$ kubectl top node my-node                                              # 显示 my-node 的指标度量
+$ kubectl cluster-info                                                  # 显示 master 和服务的地址
+$ kubectl cluster-info dump                                             # 将当前集群状态输出到 stdout                                    
+$ kubectl cluster-info dump --output-directory=/path/to/cluster-state   # 将当前集群状态输出到 /path/to/cluster-state
