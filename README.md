@@ -1,3 +1,3 @@
 # Kubernetes
 
-K8S container 
+K8S  cluster setup.
