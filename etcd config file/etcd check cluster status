@@ -1,0 +1,2 @@
+ETCDCTL_API=3 /opt/k8s/bin/etcdctl --endpoints=https://172.31.9.160:2379,https://172.31.9.161:2379,https://172.31.9.162:2379 -- \
+cacert=/etc/kubernetes/cert/ca.pem --cert=/etc/etcd/cert/etcd.pem --key=/etc/etcd/cert/etcd-key.pem endpoint health
