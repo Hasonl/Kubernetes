@@ -1,0 +1,101 @@
+Harbor包含6个组件：
+
+Proxy(代理服务器): Harbor组件，例如register，UI和令牌服务都在代理服务后端，代理将来自客户端和浏览器的流量返回给后端各个服务。
+
+register(仓库)：负责存储Docker Images和处理docker pull/push命令。Harbor会强制对访问images进行控制，register会将客户端引导到令牌服务，以获取每次push和pull请求的有效令牌。
+
+Core services(核心服务)：Harbor核心功能，主要提供以下服务：
+UI(图形用户界面)：帮助用户管理register上的image。Webhook是在注册表中配置的一种机制，以便注册表中的图像状态更改可以填充到Harbour的Webhook端点。Harbor使用webhook来更新日志，启动复制以及其他一些功能。令牌服务：负责根据用户的项目角色为每个Docker推送/拉取命令发布令牌。如果从Docker客户端发送的请求中没有令牌，注册中心会将请求重定向到令牌服务。数据库：数据库存储项目，用户，角色，复制策略和图像的元数据。
+
+Job services(Job服务):用于Images复制，可以将本地images同步到其他Harbor实例。
+
+Log collector(日志采集器)：负责在一个地方收集其他模块的日志。
+
+
+* # 环境搭建部署：
+
+-----
+
+
+**##  基础环境安装：**
+
+
+
+wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+yum remove -y docker docker-common docker-selinux docker-engine
+yum install -y yum-utils device-mapper-persistent-data lvm2
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum-config-manager --enable docker-ce-edge
+yum-config-manager --enable docker-ce-test
+yum list docker-ce --showduplicates | sort -r |grep stable
+
+
+-----
+
+
+**Docker 安装：**
+
+
+yum install -y docker-ce-18.06.2.ce
+
+
+
+
+**安装 1.24.0 版本**
+curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+
+chmod +x /usr/local/bin/docker-compose
+
+
+**Harbor 离线安装 1.5.0 【http://harbor.orientsoft.cn/】**
+**# 安装包已下载到本地，直接上传安装即可**
+**由于域名为内网域名，配置harbor 服务器的hosts**
+
+
+**解压离线安装harbor &&  配置harbor启动文件  &&  sh install.sh 【安装】
+ tar -zxvf harbor-offline-installer-v1.5.0.tgz -C /usr/local/
+ cd /usr/local/harbor && vim harbor.cfg**
+ 
+** sh install.sh 【安装】**
+
+**访问Harbor仓库**
+
+配置镜像：
+1）下载一个centos 镜像
+2）tag并上传仓库
+3）验证
+
+**将centos renew一个新的镜像：
+docker tag centos hason.docker.com/tools/centos7.6**
+
+Docker push harbor仓库问题：
+
+**解决过程：
+/usr/local/harbor && docker-compose down**
+添加docker push镜像仓库地址：
+
+[root@harbor_164 ~]# cat /etc/docker/daemon.json 
+{
+  "registry-mirrors": ["https://au26emvz.mirror.aliyuncs.com"],
+  "insecure-registries": ["hason.docker.com"]
+}
+
+
+
+**生成https证书
+mkdir -p /data/cert/
+openssl genrsa -out /data/cert/server.key 2048
+openssl req -x509 -new -nodes -key /data/cert/server.key -subj "/CN=hason.docker.com" -days 50000 -out /data/cert/server.c**rt*
+734d078d46f0de8f92.png?x-oss-process=image/watermark,size_16,text_QDUx1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=)
+
+mkdir -p /etc/docker/certs.d/hason.docker.com
+cp /data/cert/server.crt /etc/docker/certs.d/hason.docker.com/
+systemctl restart docker
+/usr/local/harbor && docker-compose up -d
+docker login hason.docker.com   【使用harbor用户+密码登录仓库】
+
+
+
+登录harbor Web 验证!
+http://hason.docker.com
