@@ -1,4 +1,4 @@
 # Kubernetes
 
-K8S  中文 Docs     http://kubernetes.kansea.com/docs/
+Kubernetes中文社区 | 中文文档      http://docs.kubernetes.org.cn/
 
