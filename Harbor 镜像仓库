@@ -27,8 +27,6 @@ yum list docker-ce --showduplicates | sort -r |grep stable
 
 
 **Docker 安装：**
-
-
 yum install -y docker-ce-18.06.2.ce
 
 
@@ -50,6 +48,8 @@ chmod +x /usr/local/bin/docker-compose
 ** sh install.sh 【安装】**
 
 **访问Harbor仓库**
+docker login hason.docker.com
+
 
 配置镜像：
 1）下载一个centos 镜像
@@ -59,7 +59,7 @@ chmod +x /usr/local/bin/docker-compose
 **将centos renew一个新的镜像：
 docker tag centos hason.docker.com/tools/centos7.6**
 
-Docker push harbor仓库问题：
+Docker 无法push镜像到harbor仓库问题：
 
 **解决过程：
 /usr/local/harbor && docker-compose down**
