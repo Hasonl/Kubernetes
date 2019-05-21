@@ -1,0 +1,38 @@
+#######Php  Service + deployment 部署
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: php-deployment
+  namespace: lnmp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: php
+  template:
+    metadata:
+      labels:
+        app: php
+    spec:
+      containers:
+        - name: php
+          image: hason.docker.com/lnmp/php7.2.4:latest
+
+
+
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-service
+  namespace: lnmp
+  labels:
+    app: php
+spec:
+  ports:
+  - port: 9000
+  selector:
+    app: php
