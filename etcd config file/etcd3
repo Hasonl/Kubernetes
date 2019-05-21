@@ -1,0 +1,36 @@
+[root@k8s-m3 ~]# cat /usr/lib/systemd/system/etcd.service
+[Unit]
+Description=Etcd Server
+After=network.target
+After=network-online.target
+Wants=network-online.target
+Documentation=https://github.com/coreos
+
+[Service]
+Type=notify
+WorkingDirectory=/var/lib/etcd/
+ExecStart=/opt/k8s/bin/etcd \
+  --data-dir=/var/lib/etcd \
+  --name=etcd3 \
+  --cert-file=/etc/etcd/cert/etcd.pem \
+  --key-file=/etc/etcd/cert/etcd-key.pem \
+  --trusted-ca-file=/etc/kubernetes/cert/ca.pem \
+  --peer-cert-file=/etc/etcd/cert/etcd.pem \
+  --peer-key-file=/etc/etcd/cert/etcd-key.pem \
+  --peer-trusted-ca-file=/etc/kubernetes/cert/ca.pem \
+  --peer-client-cert-auth \
+  --client-cert-auth \
+  --listen-peer-urls=https://172.31.9.162:2380 \
+  --initial-advertise-peer-urls=https://172.31.9.162:2380 \
+  --listen-client-urls=https://172.31.9.162:2379,http://127.0.0.1:2379 \
+  --advertise-client-urls=https://172.31.9.162:2379 \
+  --initial-cluster-token=etcd-cluster-0 \
+  --initial-cluster=etcd1=https://172.31.9.160:2380,etcd2=https://172.31.9.161:2380,etcd3=https://172.31.9.162:2380 \
+  --initial-cluster-state=new
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+[root@k8s-m3 ~]# 
