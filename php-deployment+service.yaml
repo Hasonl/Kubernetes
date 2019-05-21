@@ -1,4 +1,4 @@
-#######Php  Service + deployment 部署
+#######Php  Service + deployment
 
 apiVersion: extensions/v1beta1
 kind: Deployment
