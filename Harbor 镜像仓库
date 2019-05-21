@@ -12,14 +12,8 @@ Job services(Job服务):用于Images复制，可以将本地images同步到其�
 Log collector(日志采集器)：负责在一个地方收集其他模块的日志。
 
 
-* # 环境搭建部署：
 
------
-
-
-**##  基础环境安装：**
-
-
+基础环境安装：
 
 wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
 wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
@@ -31,15 +25,11 @@ yum-config-manager --enable docker-ce-test
 yum list docker-ce --showduplicates | sort -r |grep stable
 
 
------
-
 
 **Docker 安装：**
 
 
 yum install -y docker-ce-18.06.2.ce
-
-
 
 
 **安装 1.24.0 版本**
