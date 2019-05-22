@@ -91,3 +91,6 @@ docker login hason.docker.com   【使用harbor用户+密码登录仓库】
 
 登录harbor Web 验证!
 http://hason.docker.com
+
+URL：
+https://blog.51cto.com/hason/2397415
